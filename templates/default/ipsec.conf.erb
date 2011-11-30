@@ -1,0 +1,20 @@
+# ipsec.conf - strongSwan IPsec configuration file
+
+config setup
+  charonstart=yes
+  plutostart=no
+  nat_traversal=<%= @nat_traversal %>
+
+<% @peers.each_with_index do |peer, index| %>
+conn host-host-<%= index %>
+  left=<%= @local_ip %>
+  right=<%= peer[:ipaddress] %>
+  authby=secret
+  keyexchange=ikev2
+  auto=start
+  mobike=no
+  forceencaps=yes
+  leftfirewall=yes
+<% end %>
+
+include /var/lib/strongswan/ipsec.conf.inc
