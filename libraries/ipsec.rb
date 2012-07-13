@@ -1,10 +1,21 @@
 module IPSec
+  def self.bits(dot)
+    bits   = 0
+    octets = dot.split('.').map {|p| p.to_i }
+    octets.each do |octet|
+      unless octet == 0
+        bits += Math.log10(octet + 1) / Math.log10(2)
+      end
+    end
+    bits.to_i
+  end
+
   def self.dot_to_long(dot)
-    pieces = dot.split('.').map {|p| p.to_i }
-    long   = pieces[0] << 24
-    long  += pieces[1] << 16
-    long  += pieces[2] << 8
-    long  += pieces[3]
+    octets = dot.split('.').map {|p| p.to_i }
+    long   = octets[0] << 24
+    long  += octets[1] << 16
+    long  += octets[2] << 8
+    long  += octets[3]
   end
 
   def self.subnet(ip, netmask)
@@ -23,7 +34,7 @@ module IPSec
       interface_details[:addresses].each do |address, address_details|
         if address_details[:family] == "inet"
           unless [node[:ipaddress], "127.0.0.1"].include?(address)
-            subnets << subnet(address, address_details[:netmask])
+            subnets << subnet(address, address_details[:netmask]) + "/" + bits(address_details[:netmask])
           end
         end
       end
