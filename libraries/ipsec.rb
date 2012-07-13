@@ -39,6 +39,6 @@ module IPSec
         end
       end
     end
-    subnets.join(" ")
+    subnets
   end
 end

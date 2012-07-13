@@ -10,8 +10,8 @@ conn <%= @connection_type %>-<%= index %>
   left=<%= node[:ipaddress] %>
   right=<%= peer[:ipaddress] %>
 <% if @connection_type == "net-net" -%>
-  leftsubnets=<%= IPSec.get_subnets(node) %>
-  rightsubnets=<%= IPSec.get_subnets(peer) %>
+  leftsubnet=<%= IPSec.get_subnets(node).first %>
+  rightsubnet=<%= IPSec.get_subnets(peer).first %>
 <% end -%>
   authby=secret
   keyexchange=ikev2
