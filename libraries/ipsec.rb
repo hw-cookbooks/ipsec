@@ -22,7 +22,7 @@ module IPSec
     node[:network][:interfaces].each_value do |interface_details|
       interface_details[:addresses].each do |address, address_details|
         if address_details[:family] == "inet"
-          unless address == node[:ipaddress]
+          unless [node[:ipaddress], "127.0.0.1"].include?(address)
             subnets << subnet(address, address_details[:netmask])
           end
         end
