@@ -12,13 +12,14 @@ conn <%= @connection_type %>-<%= index %>
 <% if @connection_type == "net-net" -%>
   leftsubnet=<%= IPSec.get_subnets(node).first %>
   rightsubnet=<%= IPSec.get_subnets(peer).first %>
+<% else -%>
+  mobike=no
+  forceencaps=yes
+  leftfirewall=yes
 <% end -%>
   authby=secret
   keyexchange=ikev2
   auto=start
-  mobike=no
-  forceencaps=yes
-  leftfirewall=yes
 <% end -%>
 
 include /var/lib/strongswan/ipsec.conf.inc
