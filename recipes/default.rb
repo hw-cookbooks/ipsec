@@ -34,8 +34,8 @@ template "/etc/ipsec.secrets" do
 end
 
 template "/etc/strongswan.conf" do
-  variables(:multiple_auth => node[:ipsec][:charon][:multiple_auth],
-            :load_modules => node[:ipsec][:charon][:modules])
+  variables( :load => node[:ipsec][:charon][:modules].join(" "),
+             :multiple_authentication => node[:ipsec][:charon][:multiple_authentication] )
   notifies :reload, "service[ipsec]"
 end
 
