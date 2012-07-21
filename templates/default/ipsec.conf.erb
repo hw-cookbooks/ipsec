@@ -5,16 +5,21 @@ config setup
   plutostart=no
   nat_traversal=<%= @nat_traversal %>
 
-<% @peers.each_with_index do |peer, index| %>
-conn host-host-<%= index %>
-  left=<%= @local_ip %>
+<% @peers.each_with_index do |peer, index| -%>
+conn <%= @connection_type %>-<%= index %>
+  left=<%= node[:ipaddress] %>
   right=<%= peer[:ipaddress] %>
-  authby=secret
-  keyexchange=ikev2
-  auto=start
+<% if @connection_type == "net-net" -%>
+  leftsubnet=<%= IPSec.get_subnets(node).first %>
+  rightsubnet=<%= IPSec.get_subnets(peer).first %>
+<% else -%>
   mobike=no
   forceencaps=yes
   leftfirewall=yes
-<% end %>
+<% end -%>
+  authby=secret
+  keyexchange=ikev2
+  auto=start
+<% end -%>
 
 include /var/lib/strongswan/ipsec.conf.inc

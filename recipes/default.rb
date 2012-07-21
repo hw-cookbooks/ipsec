@@ -21,15 +21,21 @@ package "strongswan"
 
 template "/etc/ipsec.conf" do
   source "ipsec.conf.erb"
-  variables( :nat_traversal => node[:ipsec][:nat_traversal],
-             :peers => search( :node, "recipes:ipsec AND NOT name:#{node.name}" ),
-             :local_ip => node[:ipaddress] )
+  variables( :connection_type => node[:ipsec][:connection_type],
+             :nat_traversal => node[:ipsec][:nat_traversal],
+             :peers => search( :node, "recipes:ipsec AND NOT name:#{node.name}" ) )
   notifies :reload, "service[ipsec]"
 end
 
 template "/etc/ipsec.secrets" do
   source "ipsec.secrets.erb"
   variables( :secret => node[:ipsec][:shared_secret] )
+  notifies :reload, "service[ipsec]"
+end
+
+template "/etc/strongswan.conf" do
+  variables( :load => node[:ipsec][:charon][:modules].join(" "),
+             :multiple_authentication => node[:ipsec][:charon][:multiple_authentication] )
   notifies :reload, "service[ipsec]"
 end
 
