@@ -1,7 +1,7 @@
 module IPSec
   def self.bits(dot)
     bits   = 0
-    octets = dot.split('.').map {|p| p.to_i }
+    octets = dot.split(".").map {|p| p.to_i }
     octets.each do |octet|
       unless octet == 0
         bits += Math.log10(octet + 1) / Math.log10(2)
@@ -11,7 +11,7 @@ module IPSec
   end
 
   def self.dot_to_long(dot)
-    octets = dot.split('.').map {|p| p.to_i }
+    octets = dot.split(".").map {|p| p.to_i }
     long   = octets[0] << 24
     long  += octets[1] << 16
     long  += octets[2] << 8
@@ -25,7 +25,7 @@ module IPSec
     octets[1] = (smashed & 0x00FF0000) >> 16
     octets[2] = (smashed & 0x0000FF00) >> 8
     octets[3] = (smashed & 0x000000FF)
-    octets.join('.')
+    octets.join(".")
   end
 
   def self.get_subnets(node)
