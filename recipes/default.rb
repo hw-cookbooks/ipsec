@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: ipsec
+# Cookbook:: ipsec
 # Recipe:: default
 #
-# Copyright 2011, Heavy Water Software Inc.
+# Copyright:: 2011, Heavy Water Software Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,29 +17,29 @@
 # limitations under the License.
 #
 
-package "strongswan"
+package 'strongswan'
 
-template "/etc/ipsec.conf" do
-  source "ipsec.conf.erb"
-  variables( :connection_type => node[:ipsec][:connection_type],
-             :nat_traversal => node[:ipsec][:nat_traversal],
-             :peers => search( :node, "recipes:ipsec AND NOT name:#{node.name}" ) )
-  notifies :reload, "service[ipsec]"
+template '/etc/ipsec.conf' do
+  source 'ipsec.conf.erb'
+  variables(connection_type: node['ipsec']['connection_type'],
+             nat_traversal: node['ipsec']['nat_traversal'],
+             peers: search(:node, "recipes:ipsec AND NOT name:#{node.name}"))
+  notifies :reload, 'service[ipsec]'
 end
 
-template "/etc/ipsec.secrets" do
-  source "ipsec.secrets.erb"
-  variables( :secret => node[:ipsec][:shared_secret] )
-  notifies :reload, "service[ipsec]"
+template '/etc/ipsec.secrets' do
+  source 'ipsec.secrets.erb'
+  variables(secret: node['ipsec']['shared_secret'])
+  notifies :reload, 'service[ipsec]'
 end
 
-template "/etc/strongswan.conf" do
-  variables( :load => node[:ipsec][:charon][:modules].join(" "),
-             :multiple_authentication => node[:ipsec][:charon][:multiple_authentication] )
-  notifies :reload, "service[ipsec]"
+template '/etc/strongswan.conf' do
+  variables(load: node['ipsec']['charon']['modules'].join(' '),
+             multiple_authentication: node['ipsec']['charon']['multiple_authentication'])
+  notifies :reload, 'service[ipsec]'
 end
 
-service "ipsec" do
-  supports :status => true, :restart => true, :reload => true
+service 'ipsec' do
+  supports status: true, restart: true, reload: true
   action [ :enable, :start ]
 end
